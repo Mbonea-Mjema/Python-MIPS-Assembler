@@ -1,9 +1,3 @@
-##############################
-#    SZ, TZ, ZM              #
-#    10/3/2013               #
-#      assembly_parser.py    #
-##############################
-
 import re
 
 class command(object):
@@ -40,14 +34,15 @@ class assembly_parser(object):
     # Output for zengxu's wishes
     output_array = []
 
-    def __init__(self, default_memory_location, instruction_table, register_table, pseudoinstruction_table, word_size):
+    def __init__(self, default_memory_location, instruction_table, register_table, pseudoinstruction_table, word_size,output_file=None):
         ''' Initialize tables and memory
         '''
         self.default_mem_loc    = default_memory_location
         self.instruction_table  = instruction_table
         self.register_table     = register_table
         self.pseudinstr_table   = pseudoinstruction_table
-        self.word_size          = word_size
+        self.word_size = word_size
+        self.output_file = output_file
 
     def first_pass(self, lines):
         ''' For first pass, calculate size in mem of each instruction for calculating addressing
@@ -126,7 +121,6 @@ class assembly_parser(object):
             if ':' in line:
                 label = line[0:line.find(':')]
                 line = line[line.find(':') + 1:].strip()
-                self.output_array.append( '\n' + hex(int(self.symbol_table[label])) + ' <' + label + '>:' )
 
             # Assembler directives: .org, .byte, etc.
             if '.' in line:
@@ -483,7 +477,7 @@ class assembly_parser(object):
         # new word!
         if self.current_location % 4 == 0:
             # Format it nicely
-            self.output_array.append(hex(self.current_location) + ':    0x')
+            self.output_array.append(hex(self.current_location) + ': 0x')
 
         for i in range(0, len(bit_string) - 1, 8):
             self.system_memory[self.current_location] = bit_string[i:i + 8]
@@ -492,25 +486,22 @@ class assembly_parser(object):
 
             self.current_location += 1
 
-        if self.current_location %4 == 0:
-            # Finish formatting nicely
-            self.output_array[-1] += '    ' + instruction.ljust(5) + ', '.join(arguments)
-
     def print_memory_map(self):
         ''' Print memory map as it exists after allocation
         '''
-        print("The memory map is:\n")
         keylist = list(self.system_memory.keys())
         keylist.sort()
-        for key in keylist:
-            print("%s: %s" % (key, self.system_memory[key]))
 
-        print("\nThe label list is: " + str(self.symbol_table))
-       # print "\nThe current location is: " + str(self.current_location)
-        print('\n\n')
-        print('The memory map in HEX:')
-        for output in self.output_array:
-            print(output)
+        if None == self.output_file:
+            for output in self.output_array:
+                print( output)
+        else:
+            with open(self.output_file, 'w') as f:
+                for output in self.output_array:
+                    f( output+'\n')
+                
+
+
 
     def value_outside_range(self, value):
         ''' Check if value is greater than 16-bits
