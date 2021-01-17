@@ -1,19 +1,4 @@
-#############################
-#    SZ, TZ, ZM             #
-#    10/3/2013              #
-#    instruction_table.py   #
-#############################
 
-# Create the Symbol Table as a dictionary. This table stores ROM addresses of each reserved register in our MIPS
-# Assembler
-
-
-# nstruction format length
-# 6 : R
-# 4 : I
-# 2 : J
-
-# All values in HEX
 instruction_table = {
 	'add'   : ['0x00','rs','rt','rd','shamt','0x20'],
 	'addi'  : ['0x08','rs','rt','imm'],
@@ -35,6 +20,7 @@ instruction_table = {
 	'or'    : ['0x00','rs','rt','rd','shamt','0x25'],
 	'ori'   : ['0x0D','rs','rt','imm'],
 	'slt'   : ['0x00','rs','rt','rd','shamt','0x2A'],
+    'sll'   : ['0x00','rs','rt','rd','shamt','0x00'],
 	'slti'  : ['0x0A','rs','rt','imm'],
     'sltiu' : ['0x0B','rs','rt','imm'],
 	'sltu'  : ['0x00','rs','rt','rd','shamt','0x2B'],

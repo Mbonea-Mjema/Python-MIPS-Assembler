@@ -96,7 +96,7 @@ class assembly_parser(object):
             # Sanitize arguments so every numeric is decimal
             acount = 0
             for arg in args:
-                if arg not in self.symbol_table.keys():
+                if arg not in list(self.symbol_table.keys()):
                     if arg[-1] == 'H':
                         args[acount] = str(int(arg[:-1], 16))
                     elif arg[-1] == 'B':
@@ -161,7 +161,7 @@ class assembly_parser(object):
             # Sanitize arguments so every numeric is decimal
             acount      = 0
             for arg in args:
-                if arg not in self.symbol_table.keys():
+                if arg not in list(self.symbol_table.keys()):
                     if arg[-1] == 'H':
                         args[acount] = str(int(arg[:-1], 16))
                     elif arg[-1] == 'B':
@@ -169,13 +169,13 @@ class assembly_parser(object):
                 acount += 1
 
             # Create function code from instruction table
-            if instruction in self.pseudinstr_table.keys():
+            if instruction in list(self.pseudinstr_table.keys()):
                 self.parse_pseudoinstruction(instruction, args)
-            elif instruction in self.instruction_table.keys():
+            elif instruction in list(self.instruction_table.keys()):
                 self.parse_instruction(instruction, args)
 
             else:
-                print "INSTRUCTION: " + instruction + " IS INVALID! ABORT"
+                print("INSTRUCTION: " + instruction + " IS INVALID! ABORT")
                 exit()
 
         self.print_memory_map()
@@ -206,11 +206,10 @@ class assembly_parser(object):
                 # Finish processing args
                 args[arg_count] = register
 
-            elif arg in self.register_table.keys():
+            elif arg in list(self.register_table.keys()):
 
                 # Replace symbol with value in table
-                args[arg_count] = int(self.register_table[arg])
-
+                args[arg_count] = int(float(self.register_table[arg]))
             elif arg in self.symbol_table:
                 # Replace label with its value
                 args[arg_count] = self.symbol_table[arg]
@@ -221,10 +220,10 @@ class assembly_parser(object):
 
         # Branch instructions are all relative to location
         if (instruction == 'beq' or instruction == 'bne'):
-            args[2] = (int(args[2]) - self.current_location - 4)/4
+            args[2] = (int(args[2]) - (self.current_location +4) )/4 
         # Jump instructions are all absolute divisions of 4 of the location (word loc)
         if (instruction == 'j' or instruction == 'jal' or instruction == 'jr'):
-            args[0] = str(int(args[0])/4)
+            args[0] = str(int(args[0]))
         # Finally convert each value to hex
         for i in range(0, len(args)):
             args[i] = str(hex(int(args[i])))
@@ -462,7 +461,7 @@ class assembly_parser(object):
             if instruction in self.instruction_table:
                 return 4
             else:
-                print "NOT VALID INSTRUCTION: " + instruction + "\n ABORTING..."
+                print("NOT VALID INSTRUCTION: " + instruction + "\n ABORTING...")
                 exit()
 
     def hex2bin(self, hex_val, num_bits):
@@ -519,24 +518,24 @@ class assembly_parser(object):
     def print_memory_map(self):
         ''' Print memory map as it exists after allocation
         '''
-        print "The memory map is:\n"
-        keylist = self.system_memory.keys()
+        print("The memory map is:\n")
+        keylist = list(self.system_memory.keys())
         keylist.sort()
         for key in keylist:
-            print "%s: %s" % (key, self.system_memory[key])
+            print("%s: %s" % (key, self.system_memory[key]))
 
-        print "\nThe label list is: " + str(self.symbol_table)
+        print("\nThe label list is: " + str(self.symbol_table))
        # print "\nThe current location is: " + str(self.current_location)
-        print '\n\n'
-        print 'The memory map in HEX:'
+        print('\n\n')
+        print('The memory map in HEX:')
         for output in self.output_array:
-            print output
+            print(output)
 
     def value_outside_range(self, value):
         ''' Check if value is greater than 16-bits
         '''
         if abs(value) > pow(2,32):
-            print "The value: " + str(value) + " is greater than 32-bits! ERROR"
+            print("The value: " + str(value) + " is greater than 32-bits! ERROR")
             exit()
 
         return value > (pow(2, 15) - 1) or value < -(pow(2, 15))

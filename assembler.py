@@ -13,7 +13,7 @@ import sys
 import getopt
 
 def usage():
-    print 'Usage: '+sys.argv[0]+' -i <file1>'
+    print('Usage: '+sys.argv[0]+' -i <file1>')
     sys.exit(1)
 
 def main(argv):
