@@ -1,9 +1,3 @@
-#############################
-#    SZ, TZ, ZM             #
-#    10/3/2013              #
-#    assembler.py           #
-#############################
-
 from assembly_parser import assembly_parser
 from instruction_table import instruction_table
 from register_table import register_table

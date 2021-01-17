@@ -221,6 +221,9 @@ class assembly_parser(object):
         # Branch instructions are all relative to location
         if (instruction == 'beq' or instruction == 'bne'):
             args[2] = (int(args[2]) - (self.current_location +4) )/4 
+            temp =  args[0]
+            args[0]=args[1]
+            args[1]=temp     
         # Jump instructions are all absolute divisions of 4 of the location (word loc)
         if (instruction == 'j' or instruction == 'jal' or instruction == 'jr'):
             args[0] = str(int(args[0]))
@@ -342,16 +345,7 @@ class assembly_parser(object):
                 instructions.append(instruction)
                 arguments.append(args)
 
-        # li check for size of argument
-        if instruction == 'li':
-            if self.value_outside_range(int(args[1])):
-                    immediate_lower_16 = int(args[1]) % pow(2, 16)
-                    immediate_upper_16 = int(args[1]) / pow(2, 16)
-                    instructions = ['lui', 'addi']
-                    arguments    = [[args[0], str(immediate_upper_16)], [args[0], args[0], str(immediate_lower_16)]]
-            else:
-                    instructions = ['addi']
-                    arguments    = [[args[0], '$zero', args[1]]]
+
 
         # addi check for size of argument
         if instruction == 'addi':
@@ -384,26 +378,13 @@ class assembly_parser(object):
                     instructions.append(instruction)
                     arguments.append(args)
 
-        # Branch instructions will always be same amount of regular instructions
-        if instruction == 'bge':
-            instructions = ['slt', 'beq']
-            arguments = [[args[0], args[0], args[1]], [args[0], '$zero', args[2]]]
 
-        if instruction == 'bgt':
-            instructions = ['slt', 'bne']
-            arguments = [[args[0], args[0], args[1]], [args[0], '$zero', args[2]]]
-
-        if instruction == 'ble':
-            instructions = ['slt', 'bne']
-            arguments = [[args[0], args[1], args[0]], [args[0], '$zero', args[2]]]
 
         if instruction == 'move':
             instructions = ['add']
             arguments = [[args[0], args[1], '$zero']]
 
-        if instruction == 'clear':
-            instructions = ['add']
-            arguments = [[args[0], '$zero', '$zero']]
+
 
         count = 0
 

@@ -11,8 +11,6 @@ pseudoinstruction_table = {
     'move'  : ['add'],                 # add other reg and zero, store in reg
     'clear' : ['add'],                # addi zero and zero, store in reg
     'li'    : ['addi', 'addi'],        # load total immediate
-    'beq'   : ['lui', 'addi', 'beq'],  # add immediate twice for big immediates
-    'ble'   : ['slt','bne'],     # branch if equal
     'bgt'   : ['slt','bne'],     # skip past bne if equal
     'bge'   : ['slt','beq'],           # straightforward
     'addi'  : ['addi','addi'],         # add immediate twice for big immediates
