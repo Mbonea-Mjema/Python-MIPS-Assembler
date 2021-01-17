@@ -11,7 +11,8 @@ parser.add_argument('--verbose',action='store_true',help='verbose flag' )
 parser.add_argument('--instruction', '-i', help='assembly instruction', required=False, type=str)
 parser.add_argument('--file','-f' ,required=False,help='inputfile', type=str)
 parser.add_argument('--output','-o' ,required=False,help='outputfile', type=str)
-parser.add_argument('--start','-s' ,required=False,help='starting adress', type=int)
+parser.add_argument('--start', '-s', required=False, help='starting adress', type=int)
+parser.add_argument('--check','-c' ,required=False,help='starting adress',action='store_true')
 args = parser.parse_args()
 
 
@@ -33,6 +34,16 @@ def main(args):
     parser = assembly_parser(start_addr, instruction_table, register_table, pseudoinstruction_table,4,output_file=ouput_file)
     parser.first_pass(lines)
     parser.second_pass(lines)
+    if args.check:
+        valid = open('verify.txt')
+        valid_hex = valid.readlines()
+        parser.output_array
+        print('--'*100,'verifying')
+        for i,valid_inst in zip(range(len(valid_hex)),valid_hex):
+            inst = parser.output_array[i].split(': 0x')[1]
+            print(valid_inst,inst)
+            if inst != valid_inst:
+                print('invalid code')
 
 
 

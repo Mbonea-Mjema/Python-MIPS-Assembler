@@ -121,6 +121,7 @@ class assembly_parser(object):
             if ':' in line:
                 label = line[0:line.find(':')]
                 line = line[line.find(':') + 1:].strip()
+                #self.output_array.append( '\n' + hex(int(self.symbol_table[label])) + ' <' + label + '>:' )
 
             # Assembler directives: .org, .byte, etc.
             if '.' in line:
@@ -241,6 +242,8 @@ class assembly_parser(object):
                 rs = args[1]
                 rt = args[2]
                 rd = args[0]
+            
+            
             machine_code[1] = rs
             machine_code[2] = rt
             machine_code[3] = rd
